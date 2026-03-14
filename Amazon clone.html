@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazon Clone</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    :root {
+      --amazon-dark: #131921;
+      --amazon-light: #232f3e;
+      --amazon-orange: #febd69;
+      --bg-gray: #e3e6e6;
+      --text-main: #0f1111;
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-gray);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .header-section {
+      background-color: var(--amazon-dark);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .navbar {
+      max-width: 1500px;
+      margin: 0 auto;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .nav-logo img {
+      height: 35px;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-logo img:hover {
+      transform: scale(1.05);
+      filter: brightness(1.08);
+    }
+
+    .location {
+      color: #ccc;
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .location b {
+      font-size: 0.95rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .nav-search {
+      flex: 1;
+      display: flex;
+      height: 40px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: white;
+      min-width: 260px;
+    }
+
+    .nav-search:focus-within {
+      box-shadow: 0 0 0 3px var(--amazon-orange);
+    }
+
+    .select-search {
+      background: #f3f3f3;
+      border: none;
+      padding: 0 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border-right: 1px solid #ddd;
+      outline: none;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      padding: 0 16px;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .search-icon {
+      background: var(--amazon-orange);
+      width: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .search-icon:hover {
+      background: #f0b72b;
+    }
+
+    .nav-tools {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      color: white;
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-tools a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-tools b {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .cart-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .cart-count {
+      position: absolute;
+      left: 12px;
+      top: -5px;
+      background: var(--amazon-orange);
+      color: var(--amazon-dark);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .categories-bar {
+      background-color: var(--amazon-light);
+      padding: 8px 20px;
+      display: flex;
+      gap: 20px;
+      color: white;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .categories-bar a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    .categories-bar a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .hero {
+      height: 420px;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.55)),
+        url('https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=1400&q=80')
+        center/cover no-repeat;
+      margin-bottom: -150px;
+      position: relative;
+    }
+
+    .hero-text {
+      position: absolute;
+      bottom: 170px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.95);
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      text-align: center;
+      width: min(90%, 1000px);
+    }
+
+    .main-content {
+      max-width: 1500px;
+      margin: -100px auto 40px;
+      padding: 0 20px 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      min-height: 420px;
+      box-shadow: var(--card-shadow);
+      transition: all 0.35s ease;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: slideUp 0.6s forwards;
+      overflow: hidden;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    }
+
+    .card-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+      transition: transform 0.4s ease;
+    }
+
+    .card:hover .card-img {
+      transform: scale(1.05);
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-content h3 {
+      font-size: 1.1rem;
+      color: #111;
+    }
+
+    .card-content p {
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    .price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #b12704;
+    }
+
+    .add-to-cart {
+      background: linear-gradient(135deg, var(--amazon-orange), #f0b72b);
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      color: var(--amazon-dark);
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      width: 100%;
+    }
+
+    .add-to-cart:hover {
+      transform: scale(1.02);
+      opacity: 0.95;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 900px) {
+      .navbar {
+        gap: 12px;
+      }
+
+      .nav-search {
+        order: 3;
+        width: 100%;
+      }
+
+      .hero {
+        height: 300px;
+        margin-bottom: -80px;
+      }
+
+      .hero-text {
+        bottom: 90px;
+      }
+
+      .main-content {
+        margin: -50px auto 30px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .navbar {
+        padding: 10px;
+      }
+
+      .nav-tools {
+        gap: 12px;
+        font-size: 0.8rem;
+      }
+
+      .card {
+        min-height: auto;
+      }
+
+      .hero-text {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header-section">
+    <div class="navbar">
+      <div class="nav-logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
+      </div>
+
+      <div class="location">
+        <span style="font-size: 0.75rem;">Deliver to</span>
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <span class="material-icons" style="font-size: 1.1rem;">location_on</span>
+          <b>India</b>
+        </div>
+      </div>
+
+      <div class="nav-search">
+        <select class="select-search" id="categorySelect">
+          <option value="all">All</option>
+          <option value="electronics">Electronics</option>
+          <option value="home">Home</option>
+          <option value="beauty">Beauty</option>
+        </select>
+        <input type="text" placeholder="Search Amazon.in" class="search-input" id="searchInput">
+        <div class="search-icon" id="searchBtn">
+          <span class="material-icons">search</span>
+        </div>
+      </div>
+
+      <div class="nav-tools">
+        <a href="#">Hello, Sign in <br><b>Account & Lists</b></a>
+        <a href="#">Returns <br><b>& Orders</b></a>
+        <a href="#" class="cart-btn">
+          <span class="cart-count" id="cartCount">0</span>
+          <span class="material-icons" style="font-size: 2rem;">shopping_cart</span>
+          <b>Cart</b>
+        </a>
+      </div>
+    </div>
+
+    <nav class="categories-bar">
+      <a href="#"><span class="material-icons">menu</span>All</a>
+      <a href="#">Today's Deals</a>
+      <a href="#">Customer Service</a>
+      <a href="#">Registry</a>
+      <a href="#">Gift Cards</a>
+      <a href="#">Sell</a>
+      <a href="#">Electronics</a>
+      <a href="#">Mobiles</a>
+      <a href="#">Fashion</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="hero-text">
+        Welcome to your Amazon Clone project with JavaScript features.
+      </div>
+    </div>
+
+    <div class="main-content" id="productContainer">
+      <div class="card" data-name="smart speaker with voice assistant" data-category="electronics">
+        <img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80" alt="Smart Speaker" class="card-img">
+        <div class="card-content">
+          <h3>Smart Speaker with Voice Assistant</h3>
+          <p>Enjoy hands-free music, smart controls, and voice assistant support with this compact speaker.</p>
+          <div class="price">₹3,999</div>
+          <button class="add-to-cart">Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="card" data-name="extension board with multi plug" data-category="electronics">
+        <img src="https://images.unsplash.com/photo-1585386959984-a4155224a1ad?auto=format&fit=crop&w=800&q=80" alt="Extension Board" class="card-img">
+        <div class="card-content">
+          <h3>Extension Board with Multi Plug</h3>
+          <p>Durable extension board with multiple sockets, ideal for home office, charging stations, and daily use.</p>
+          <div class="price">₹799</div>
+          <button class="add-to-cart">Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="card" data-name="gentle daily skin cleanser" data-category="beauty">
+        <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80" alt="Skin Care Product" class="card-img">
+        <div class="card-content">
+          <h3>Gentle Daily Skin Cleanser</h3>
+          <p>Mild face cleanser designed for daily skincare with a smooth, refreshing feel for all skin types.</p>
+          <div class="price">₹499</div>
+          <button class="add-to-cart">Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="card" data-name="vacuum storage bags set" data-category="home">
+        <img src="https://images.unsplash.com/photo-1582735689369-4fe89db7114c?auto=format&fit=crop&w=800&q=80" alt="Storage Bags" class="card-img">
+        <div class="card-content">
+          <h3>Vacuum Storage Bags Set</h3>
+          <p>Save wardrobe and bedding space using reusable vacuum bags designed for blankets, clothes, and pillows.</p>
+          <div class="price">₹999</div>
+          <button class="add-to-cart">Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="no-results hidden" id="noResults">No products found.</div>
+    </div>
+  </main>
+
+  <script>
+    const cartCount = document.getElementById("cartCount");
+    const addToCartButtons = document.querySelectorAll(".add-to-cart");
+    const searchInput = document.getElementById("searchInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const categorySelect = document.getElementById("categorySelect");
+    const cards = document.querySelectorAll(".card");
+    const noResults = document.getElementById("noResults");
+
+    let cartItems = 0;
+
+    function updateCartCount() {
+      cartCount.textContent = cartItems;
+    }
+
+    addToCartButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        cartItems++;
+        updateCartCount();
+
+        const productName = button.parentElement.querySelector("h3").textContent;
+        alert(productName + " added to cart!");
+      });
+    });
+
+    function filterProducts() {
+      const searchValue = searchInput.value.toLowerCase().trim();
+      const selectedCategory = categorySelect.value;
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const productName = card.dataset.name;
+        const productCategory = card.dataset.category;
+
+        const matchesSearch = productName.includes(searchValue);
+        const matchesCategory =
+          selectedCategory === "all" || productCategory === selectedCategory;
+
+        if (matchesSearch && matchesCategory) {
+          card.classList.remove("hidden");
+          visibleCount++;
+        } else {
+          card.classList.add("hidden");
+        }
+      });
+
+      if (visibleCount === 0) {
+        noResults.classList.remove("hidden");
+      } else {
+        noResults.classList.add("hidden");
+      }
+    }
+
+    searchBtn.addEventListener("click", filterProducts);
+    categorySelect.addEventListener("change", filterProducts);
+
+    searchInput.addEventListener("keyup", (event) => {
+      if (event.key === "Enter") {
+        filterProducts();
+      }
+    });
+  </script>
+</body>
+</html>
