@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #74b9ff, #0984e3);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.96);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      color: #2d3436;
+      margin-bottom: 1rem;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    input {
+      flex: 1;
+      min-width: 180px;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #0984e3;
+    }
+
+    button {
+      padding: 12px 18px;
+      background: #00b894;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background: #00a085;
+      transform: translateY(-1px);
+    }
+
+    .weather-display {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 1.5rem;
+      border-radius: 15px;
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .weather-info {
+      width: 100%;
+    }
+
+    .weather-info h2 {
+      color: #2d3436;
+      margin-bottom: 0.5rem;
+    }
+
+    .weather-info p {
+      font-size: 1.05rem;
+      margin: 8px 0;
+      color: #2d3436;
+    }
+
+    .weather-icon {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin: 10px auto;
+      display: block;
+    }
+
+    .temperature {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #0984e3;
+      margin: 10px 0;
+    }
+
+    .status,
+    .loading,
+    .error {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .error {
+      color: #d63031;
+      font-weight: bold;
+    }
+
+    .loading {
+      color: #636e72;
+    }
+
+    .status {
+      color: #2d3436;
+    }
+
+    .details {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #dfe6e9;
+      text-align: left;
+    }
+
+    .details p {
+      font-size: 0.98rem;
+    }
+
+    @media (max-width: 600px) {
+      .search-box {
+        flex-direction: column;
+      }
+
+      button,
+      input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Weather App</h1>
+
+    <div class="search-box">
+      <input type="text" id="cityInput" placeholder="Enter city name">
+      <button id="searchBtn">Search</button>
+      <button id="currentBtn">Current Location</button>
+    </div>
+
+    <div id="weatherDisplay" class="weather-display">
+      <p class="status">Enter a city or use current location to see weather.</p>
+    </div>
+  </div>
+
+  <script>
+    const cityInput = document.getElementById('cityInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const currentBtn = document.getElementById('currentBtn');
+    const weatherDisplay = document.getElementById('weatherDisplay');
+
+    const weatherDescriptions = {
+      0: 'Clear sky',
+      1: 'Mainly clear',
+      2: 'Partly cloudy',
+      3: 'Overcast',
+      45: 'Fog',
+      48: 'Depositing rime fog',
+      51: 'Light drizzle',
+      53: 'Moderate drizzle',
+      55: 'Dense drizzle',
+      56: 'Light freezing drizzle',
+      57: 'Dense freezing drizzle',
+      61: 'Slight rain',
+      63: 'Moderate rain',
+      65: 'Heavy rain',
+      66: 'Light freezing rain',
+      67: 'Heavy freezing rain',
+      71: 'Slight snow fall',
+      73: 'Moderate snow fall',
+      75: 'Heavy snow fall',
+      77: 'Snow grains',
+      80: 'Slight rain showers',
+      81: 'Moderate rain showers',
+      82: 'Violent rain showers',
+      85: 'Slight snow showers',
+      86: 'Heavy snow showers',
+      95: 'Thunderstorm',
+      96: 'Thunderstorm with slight hail',
+      99: 'Thunderstorm with heavy hail'
+    };
+
+    function getIconUrl(code, isDay = true) {
+      const iconMap = {
+        0: isDay ? '01d' : '01n',
+        1: isDay ? '02d' : '02n',
+        2: isDay ? '03d' : '03n',
+        3: '04d',
+        45: '50d',
+        48: '50d',
+        51: '09d',
+        53: '09d',
+        55: '09d',
+        56: '13d',
+        57: '13d',
+        61: '10d',
+        63: '10d',
+        65: '10d',
+        66: '13d',
+        67: '13d',
+        71: '13d',
+        73: '13d',
+        75: '13d',
+        77: '13d',
+        80: '09d',
+        81: '09d',
+        82: '09d',
+        85: '13d',
+        86: '13d',
+        95: '11d',
+        96: '11d',
+        99: '11d'
+      };
+
+      const iconCode = iconMap[code] || '01d';
+      return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    }
+
+    function showLoading(message = 'Loading weather data...') {
+      weatherDisplay.innerHTML = `<p class="loading">${message}</p>`;
+    }
+
+    function showError(message) {
+      weatherDisplay.innerHTML = `<p class="error">${message}</p>`;
+    }
+
+    function renderWeather(data) {
+      const {
+        city,
+        country,
+        temperature,
+        description,
+        wind,
+        humidity,
+        icon,
+        feelsLike
+      } = data;
+
+      weatherDisplay.innerHTML = `
+        <div class="weather-info">
+          <h2>${city}${country ? ', ' + country : ''}</h2>
+          <img class="weather-icon" src="${icon}" alt="${description}">
+          <div class="temperature">${temperature}&deg;C</div>
+          <p><strong>${description}</strong></p>
+          <div class="details">
+            <p><strong>Feels Like:</strong> ${feelsLike}&deg;C</p>
+            <p><strong>Wind Speed:</strong> ${wind} km/h</p>
+            <p><strong>Humidity:</strong> ${humidity}%</p>
+          </div>
+        </div>
+      `;
+    }
+
+    async function getWeather(cityName) {
+      try {
+        showLoading('Searching city and weather...');
+
+        const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`;
+        const geoResponse = await fetch(geoUrl);
+        const geoData = await geoResponse.json();
+
+        if (!geoData.results || geoData.results.length === 0) {
+          showError('City not found. Please enter a valid city name.');
+          return;
+        }
+
+        const place = geoData.results[0];
+        await getWeatherByCoords(place.latitude, place.longitude, place.name, place.country || '');
+      } catch (error) {
+        console.error(error);
+        showError('Unable to fetch weather data. Please try again.');
+      }
+    }
+
+    async function getWeatherByCoords(lat, lon, cityName = 'Current Location', country = '') {
+      try {
+        showLoading('Fetching weather for your location...');
+
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m&timezone=auto`;
+        const response = await fetch(weatherUrl);
+        const data = await response.json();
+
+        if (!data.current) {
+          showError('Weather data not available for this location.');
+          return;
+        }
+
+        const current = data.current;
+        const weatherCode = current.weather_code;
+
+        renderWeather({
+          city: cityName,
+          country: country,
+          temperature: current.temperature_2m,
+          feelsLike: current.apparent_temperature,
+          description: weatherDescriptions[weatherCode] || 'Weather unavailable',
+          wind: current.wind_speed_10m,
+          humidity: current.relative_humidity_2m,
+          icon: getIconUrl(weatherCode, current.is_day === 1)
+        });
+      } catch (error) {
+        console.error(error);
+        showError('Unable to fetch location weather. Please try again.');
+      }
+    }
+
+    searchBtn.addEventListener('click', () => {
+      const city = cityInput.value.trim();
+      if (city) {
+        getWeather(city);
+      } else {
+        showError('Please enter a city name.');
+      }
+    });
+
+    cityInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        searchBtn.click();
+      }
+    });
+
+    currentBtn.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        showError('Geolocation is not supported by your browser.');
+        return;
+      }
+
+      showLoading('Getting your current location...');
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          try {
+            const reverseUrl = `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=en&format=json`;
+            const reverseResponse = await fetch(reverseUrl);
+            const reverseData = await reverseResponse.json();
+
+            const place = reverseData.results && reverseData.results[0]
+              ? reverseData.results[0]
+              : null;
+
+            await getWeatherByCoords(
+              lat,
+              lon,
+              place?.name || 'Current Location',
+              place?.country || ''
+            );
+          } catch (error) {
+            console.error(error);
+            await getWeatherByCoords(lat, lon);
+          }
+        },
+        (error) => {
+          console.error(error);
+          showError('Unable to access your location. Please allow location permission.');
+        }
+      );
+    });
+  </script>
+</body>
+</html>
