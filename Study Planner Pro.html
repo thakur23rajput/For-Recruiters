@@ -1,0 +1,615 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Planner Pro</title>
+  <style>
+    :root {
+      --bg-1: #0f172a;
+      --bg-2: #1e293b;
+      --card: rgba(255,255,255,0.95);
+      --text: #1f2937;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+      --shadow: 0 14px 35px rgba(0,0,0,0.18);
+      --border: #e2e8f0;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      padding: 24px;
+      color: var(--text);
+    }
+    .app {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .hero-card,
+    .panel,
+    .task-card,
+    .empty-state {
+      background: var(--card);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+    .hero-card {
+      padding: 30px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--primary);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-bottom: 14px;
+      font-size: 0.92rem;
+    }
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+    .hero-card p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 650px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .stat-box {
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.96);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .stat-box h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .stat-box p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .panel {
+      padding: 24px;
+    }
+    .panel h2 {
+      margin-bottom: 18px;
+      color: #0f172a;
+      font-size: 1.4rem;
+    }
+    .field-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-size: 0.94rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #334155;
+    }
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      outline: none;
+      font-size: 0.98rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
+    }
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    button {
+      border: none;
+      cursor: pointer;
+      transition: 0.25s ease;
+      font-weight: 700;
+    }
+    .btn {
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-size: 0.98rem;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      flex: 1;
+    }
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.96;
+    }
+    .top-tools {
+      display: grid;
+      grid-template-columns: 1fr 180px 160px;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .tasks-wrap {
+      display: grid;
+      gap: 16px;
+    }
+    .task-card {
+      padding: 20px;
+      border-left: 6px solid var(--primary);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .task-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 32px rgba(0,0,0,0.16);
+    }
+    .task-card.completed {
+      opacity: 0.82;
+      border-left-color: var(--success);
+    }
+    .task-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+    .task-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+    .task-card.completed .task-title {
+      text-decoration: line-through;
+    }
+    .task-desc {
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .pill {
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .priority-high { background: rgba(220,38,38,0.12); color: var(--danger); }
+    .priority-medium { background: rgba(245,158,11,0.14); color: #b45309; }
+    .priority-low { background: rgba(22,163,74,0.12); color: var(--success); }
+    .subject-pill { background: rgba(37,99,235,0.10); color: var(--primary); }
+    .date-pill { background: rgba(100,116,139,0.12); color: #475569; }
+    .task-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .task-actions button {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+    }
+    .toggle-btn { background: #dcfce7; color: #166534; }
+    .edit-btn { background: #dbeafe; color: #1d4ed8; }
+    .delete-btn { background: #fee2e2; color: #b91c1c; }
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .footer-note {
+      text-align: center;
+      color: rgba(255,255,255,0.8);
+      margin-top: 24px;
+      font-size: 0.95rem;
+    }
+    @media (max-width: 980px) {
+      .hero,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .top-tools {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 14px;
+      }
+
+      .hero-card,
+      .panel,
+      .task-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .task-top {
+        flex-direction: column;
+      }
+
+      .btn-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <div class="hero-card">
+        <span class="badge">Study Planner Pro</span>
+        <h1>By Mohit Thakur</h1>
+        <p>
+          A responsive productivity project built with HTML, CSS, and JavaScript.
+          It lets students add study tasks, organize them by subject and priority,
+          track progress, search instantly, and save all data in localStorage.
+        </p>
+      </div>
+
+      <div class="stats">
+        <div class="stat-box">
+          <h2 id="totalTasks">0</h2>
+          <p>Total Tasks</p>
+        </div>
+        <div class="stat-box">
+          <h2 id="completedTasks">0</h2>
+          <p>Completed</p>
+        </div>
+        <div class="stat-box">
+          <h2 id="pendingTasks">0</h2>
+          <p>Pending</p>
+        </div>
+        <div class="stat-box">
+          <h2 id="completionRate">0%</h2>
+          <p>Progress</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <h2 id="formHeading">Add Study Task</h2>
+
+        <div class="field-group">
+          <label for="taskTitle">Task Title</label>
+          <input type="text" id="taskTitle" placeholder="e.g. Revise JavaScript arrays" />
+        </div>
+
+        <div class="field-group">
+          <label for="taskSubject">Subject</label>
+          <input type="text" id="taskSubject" placeholder="e.g. JavaScript, DBMS, MCA" />
+        </div>
+
+        <div class="field-group">
+          <label for="taskDate">Deadline</label>
+          <input type="date" id="taskDate" />
+        </div>
+
+        <div class="field-group">
+          <label for="taskPriority">Priority</label>
+          <select id="taskPriority">
+            <option value="High">High</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label for="taskDesc">Description</label>
+          <textarea id="taskDesc" placeholder="Add short notes for this study task..."></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="saveBtn">Save Task</button>
+          <button class="btn btn-secondary" id="resetBtn" type="button">Reset</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Your Tasks</h2>
+
+        <div class="top-tools">
+          <input type="text" id="searchInput" placeholder="Search by title or subject" />
+          <select id="filterStatus">
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+          </select>
+          <select id="sortTasks">
+            <option value="latest">Latest First</option>
+            <option value="deadline">Nearest Deadline</option>
+            <option value="priority">High Priority First</option>
+          </select>
+        </div>
+
+        <div id="taskList" class="tasks-wrap"></div>
+      </div>
+    </section>
+
+    <p class="footer-note">Built as a new practice project from your uploaded HTML/CSS/JavaScript coding style.</p>
+  </div>
+
+  <script>
+    const taskTitle = document.getElementById('taskTitle');
+    const taskSubject = document.getElementById('taskSubject');
+    const taskDate = document.getElementById('taskDate');
+    const taskPriority = document.getElementById('taskPriority');
+    const taskDesc = document.getElementById('taskDesc');
+    const saveBtn = document.getElementById('saveBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const taskList = document.getElementById('taskList');
+    const searchInput = document.getElementById('searchInput');
+    const filterStatus = document.getElementById('filterStatus');
+    const sortTasks = document.getElementById('sortTasks');
+    const formHeading = document.getElementById('formHeading');
+
+    const totalTasks = document.getElementById('totalTasks');
+    const completedTasks = document.getElementById('completedTasks');
+    const pendingTasks = document.getElementById('pendingTasks');
+    const completionRate = document.getElementById('completionRate');
+
+    let tasks = JSON.parse(localStorage.getItem('study_planner_tasks') || '[]');
+    let editTaskId = null;
+
+    function saveToStorage() {
+      localStorage.setItem('study_planner_tasks', JSON.stringify(tasks));
+    }
+
+    function resetForm() {
+      taskTitle.value = '';
+      taskSubject.value = '';
+      taskDate.value = '';
+      taskPriority.value = 'Medium';
+      taskDesc.value = '';
+      editTaskId = null;
+      formHeading.textContent = 'Add Study Task';
+      saveBtn.textContent = 'Save Task';
+    }
+
+    function updateStats() {
+      const total = tasks.length;
+      const completed = tasks.filter(task => task.completed).length;
+      const pending = total - completed;
+      const progress = total ? Math.round((completed / total) * 100) : 0;
+
+      totalTasks.textContent = total;
+      completedTasks.textContent = completed;
+      pendingTasks.textContent = pending;
+      completionRate.textContent = progress + '%';
+    }
+
+    function getPriorityValue(priority) {
+      if (priority === 'High') return 1;
+      if (priority === 'Medium') return 2;
+      return 3;
+    }
+
+    function getFilteredTasks() {
+      const searchValue = searchInput.value.toLowerCase().trim();
+      const statusValue = filterStatus.value;
+      const sortValue = sortTasks.value;
+
+      let filtered = [...tasks].filter(task => {
+        const matchesSearch =
+          task.title.toLowerCase().includes(searchValue) ||
+          task.subject.toLowerCase().includes(searchValue);
+
+        const matchesStatus =
+          statusValue === 'all' ||
+          (statusValue === 'completed' && task.completed) ||
+          (statusValue === 'pending' && !task.completed);
+
+        return matchesSearch && matchesStatus;
+      });
+
+      if (sortValue === 'deadline') {
+        filtered.sort((a, b) => {
+          if (!a.date && !b.date) return 0;
+          if (!a.date) return 1;
+          if (!b.date) return -1;
+          return new Date(a.date) - new Date(b.date);
+        });
+      } else if (sortValue === 'priority') {
+        filtered.sort((a, b) => getPriorityValue(a.priority) - getPriorityValue(b.priority));
+      } else {
+        filtered.sort((a, b) => b.createdAt - a.createdAt);
+      }
+
+      return filtered;
+    }
+
+    function renderTasks() {
+      const filteredTasks = getFilteredTasks();
+      taskList.innerHTML = '';
+
+      if (filteredTasks.length === 0) {
+        taskList.innerHTML = `
+          <div class="empty-state">
+            <p>No study tasks found. Add a task to get started.</p>
+          </div>
+        `;
+        updateStats();
+        return;
+      }
+
+      filteredTasks.forEach(task => {
+        const card = document.createElement('div');
+        card.className = `task-card ${task.completed ? 'completed' : ''}`;
+
+        const priorityClass = task.priority.toLowerCase();
+        const dateText = task.date ? new Date(task.date).toLocaleDateString() : 'No deadline';
+
+        card.innerHTML = `
+          <div class="task-top">
+            <div>
+              <div class="task-title">${task.title}</div>
+              <p class="task-desc">${task.description || 'No description added.'}</p>
+            </div>
+          </div>
+
+          <div class="meta">
+            <span class="pill subject-pill">${task.subject || 'General'}</span>
+            <span class="pill priority-${priorityClass}">${task.priority} Priority</span>
+            <span class="pill date-pill">${dateText}</span>
+          </div>
+
+          <div class="task-actions">
+            <button class="toggle-btn" onclick="toggleTask(${task.id})">${task.completed ? 'Mark Pending' : 'Mark Complete'}</button>
+            <button class="edit-btn" onclick="editTask(${task.id})">Edit</button>
+            <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+          </div>
+        `;
+
+        taskList.appendChild(card);
+      });
+
+      updateStats();
+    }
+
+    function validateForm() {
+      if (!taskTitle.value.trim() || !taskSubject.value.trim()) {
+        alert('Please enter both task title and subject.');
+        return false;
+      }
+      return true;
+    }
+
+    function addOrUpdateTask() {
+      if (!validateForm()) return;
+
+      const taskData = {
+        title: taskTitle.value.trim(),
+        subject: taskSubject.value.trim(),
+        date: taskDate.value,
+        priority: taskPriority.value,
+        description: taskDesc.value.trim()
+      };
+
+      if (editTaskId) {
+        tasks = tasks.map(task =>
+          task.id === editTaskId ? { ...task, ...taskData } : task
+        );
+        alert('Task updated successfully!');
+      } else {
+        tasks.push({
+          id: Date.now(),
+          ...taskData,
+          completed: false,
+          createdAt: Date.now()
+        });
+        alert('Task added successfully!');
+      }
+
+      saveToStorage();
+      resetForm();
+      renderTasks();
+    }
+
+    function toggleTask(id) {
+      tasks = tasks.map(task =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      );
+      saveToStorage();
+      renderTasks();
+    }
+
+    function editTask(id) {
+      const task = tasks.find(item => item.id === id);
+      if (!task) return;
+
+      taskTitle.value = task.title;
+      taskSubject.value = task.subject;
+      taskDate.value = task.date;
+      taskPriority.value = task.priority;
+      taskDesc.value = task.description;
+      editTaskId = id;
+      formHeading.textContent = 'Edit Study Task';
+      saveBtn.textContent = 'Update Task';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deleteTask(id) {
+      const confirmed = confirm('Do you want to delete this task?');
+      if (!confirmed) return;
+
+      tasks = tasks.filter(task => task.id !== id);
+      saveToStorage();
+      renderTasks();
+    }
+
+    saveBtn.addEventListener('click', addOrUpdateTask);
+    resetBtn.addEventListener('click', resetForm);
+    searchInput.addEventListener('input', renderTasks);
+    filterStatus.addEventListener('change', renderTasks);
+    sortTasks.addEventListener('change', renderTasks);
+
+    renderTasks();
+
+    window.toggleTask = toggleTask;
+    window.editTask = editTask;
+    window.deleteTask = deleteTask;
+  </script>
+</body>
+</html>
