@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mohit Practice Project</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      background: #f2f2f2;
+    }
+
+    header {
+      background: #174a7e;
+      color: white;
+      text-align: center;
+      padding: 25px;
+    }
+
+    nav {
+      background: #222;
+      text-align: center;
+      padding: 10px;
+    }
+
+    nav a {
+      color: white;
+      margin: 10px;
+      text-decoration: none;
+    }
+
+    section {
+      background: white;
+      margin: 20px;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #999;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #4CAF50;
+      color: white;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+    }
+
+    button {
+      background: #174a7e;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .products {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .product {
+      border: 1px solid #ccc;
+      padding: 15px;
+      width: 200px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Mohit HTML Project</h1>
+  <p>HTML, CSS and JavaScript project</p>
+</header>
+
+<nav>
+  <a href="#about">About</a>
+  <a href="#table">Table</a>
+  <a href="#form">Form</a>
+  <a href="#shop">Shop</a>
+</nav>
+
+<section id="about">
+  <h2>About</h2>
+  <p>This is a simple practice project using HTML, CSS and JavaScript.</p>
+</section>
+
+<section id="table">
+  <h2>Student Table</h2>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Age</th>
+      <th>City</th>
+    </tr>
+    <tr>
+      <td>Mohit</td>
+      <td>21</td>
+      <td>Delhi</td>
+    </tr>
+    <tr>
+      <td>Rahul</td>
+      <td>22</td>
+      <td>Chandigarh</td>
+    </tr>
+  </table>
+</section>
+
+<section id="form">
+  <h2>Admission Form</h2>
+
+  <form onsubmit="submitForm(event)">
+    <label>Full Name</label>
+    <input type="text" required>
+
+    <label>Email</label>
+    <input type="email" required>
+
+    <label>Class</label>
+    <input type="text" required>
+
+    <label>Address</label>
+    <textarea required></textarea>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="message"></p>
+</section>
+
+<section id="shop">
+  <h2>Mini Shop</h2>
+
+  <div class="products">
+    <div class="product">
+      <h3>Smart Speaker</h3>
+      <p>Price: ₹3,999</p>
+      <button onclick="addCart()">Add to Cart</button>
+    </div>
+
+    <div class="product">
+      <h3>Skin Cleanser</h3>
+      <p>Price: ₹499</p>
+      <button onclick="addCart()">Add to Cart</button>
+    </div>
+  </div>
+
+  <h3>Cart: <span id="cart">0</span></h3>
+</section>
+
+<footer style="text-align:center; padding:20px; background:#222; color:white;">
+  Created by Mohit
+</footer>
+
+<script>
+  let cart = 0;
+
+  function addCart() {
+    cart++;
+    document.getElementById("cart").innerText = cart;
+    alert("Product added to cart");
+  }
+
+  function submitForm(event) {
+    event.preventDefault();
+    document.getElementById("message").innerText = "Form submitted successfully!";
+  }
+</script>
+
+</body>
+</html>
