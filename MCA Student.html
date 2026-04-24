@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mohit Thakur | GitHub Profile</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      color: #ffffff;
+      background: linear-gradient(135deg, #111827, #1e3a8a, #312e81);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url('50.png');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.16;
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: -1;
+    }
+
+    header {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .hero {
+      max-width: 900px;
+      padding: 45px 30px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      animation: fadeUp 1.2s ease both;
+    }
+
+    .profile-badge {
+      width: 130px;
+      height: 130px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 48px;
+      font-weight: 800;
+      color: #111827;
+      background: linear-gradient(135deg, #f8c963, #63f8e4, #c163f8);
+      animation: floatBadge 4s ease-in-out infinite;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 7vw, 5rem);
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .typing {
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      color: #dbeafe;
+      margin-bottom: 20px;
+    }
+
+    .summary {
+      max-width: 760px;
+      margin: 0 auto 30px;
+      line-height: 1.75;
+      color: #e5e7eb;
+      font-size: 1.05rem;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    nav a, .btn {
+      color: #ffffff;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.35);
+      padding: 12px 20px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      transition: 0.35s ease;
+      cursor: pointer;
+    }
+
+    nav a:hover, .btn:hover {
+      background: #ffffff;
+      color: #111827;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(255,255,255,0.15);
+    }
+
+    main {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 40px 20px 90px;
+    }
+
+    section {
+      margin-bottom: 35px;
+      padding: 28px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.11);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.22);
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      padding: 22px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.12);
+      transition: 0.35s ease;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #bfdbfe;
+    }
+
+    .card p, li {
+      line-height: 1.65;
+      color: #e5e7eb;
+    }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .skill {
+      position: relative;
+      display: inline-block;
+      padding: 10px 15px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.15);
+      border-bottom: 2px dotted #fff;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .skill:hover {
+      background: #ffffff;
+      color: #111827;
+      transform: translateY(-3px);
+    }
+
+    .skill span {
+      visibility: hidden;
+      width: 180px;
+      background: #111827;
+      color: #ffffff;
+      text-align: center;
+      border-radius: 10px;
+      padding: 10px;
+      position: absolute;
+      z-index: 10;
+      bottom: 130%;
+      left: 50%;
+      margin-left: -90px;
+      opacity: 0;
+      transition: 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .skill:hover span {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .timeline {
+      column-count: 2;
+      column-gap: 35px;
+      column-rule: 2px solid rgba(255,255,255,0.25);
+      line-height: 1.75;
+      color: #e5e7eb;
+    }
+
+    .toggle-bar {
+      text-align: center;
+      padding: 14px;
+      border-radius: 14px;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      cursor: pointer;
+      font-weight: 700;
+      margin-bottom: 15px;
+      transition: 0.3s ease;
+    }
+
+    .toggle-bar:hover {
+      transform: scale(1.02);
+    }
+
+    #moreInfo {
+      display: none;
+      padding: 20px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.12);
+      line-height: 1.7;
+    }
+
+    .project-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .project-card:hover::before {
+      left: 100%;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #dbeafe;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(35px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes floatBadge {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+
+    @media (max-width: 700px) {
+      .timeline {
+        column-count: 1;
+      }
+      section {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header id="home">
+    <div class="hero">
+      <div class="profile-badge">MT</div>
+      <h1>Mohit Thakur</h1>
+      <p class="typing">MCA Student • Web Developer • Programmer</p>
+      <p class="summary">
+        Motivated and enthusiastic MCA student seeking an entry-level software development or web development role. I enjoy building clean, interactive, and responsive websites using HTML, CSS, JavaScript, PHP, and database technologies.
+      </p>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="about">
+      <h2>About Me</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Career Objective</h3>
+          <p>I want to apply my programming skills, academic knowledge, and analytical thinking to contribute to organizational growth while continuously improving as a developer.</p>
+        </div>
+        <div class="card">
+          <h3>Location</h3>
+          <p>I belong to Una district, Himachal Pradesh. I am interested in technology, web development, and practical software projects.</p>
+        </div>
+        <div class="card">
+          <h3>Learning Focus</h3>
+          <p>Currently strengthening frontend development, CSS layouts, animations, JavaScript interactivity, and database connectivity.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <h2>Technical Skills</h2>
+      <div class="skills">
+        <div class="skill">C <span>Programming fundamentals</span></div>
+        <div class="skill">C++ <span>OOP and logic building</span></div>
+        <div class="skill">Java <span>Core programming concepts</span></div>
+        <div class="skill">Python <span>Problem solving and scripting</span></div>
+        <div class="skill">HTML <span>Structure of webpages</span></div>
+        <div class="skill">CSS <span>Design, layout, animation</span></div>
+        <div class="skill">JavaScript <span>Interactive web features</span></div>
+        <div class="skill">PHP <span>Server-side web development</span></div>
+        <div class="skill">MySQL <span>Database management</span></div>
+        <div class="skill">Oracle <span>Relational database basics</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>What I Practice</h2>
+      <div class="timeline">
+        I have practiced CSS background images, positioning, z-index, box model, child combinators, multi-column layouts, animations, transitions, float clearing, tooltips, and JavaScript show/hide panels. These concepts help me build better layouts, cleaner UI sections, and interactive webpages.
+      </div>
+    </section>
+
+    <section id="projects">
+      <h2>Project Ideas for GitHub</h2>
+      <div class="grid">
+        <div class="card project-card">
+          <h3>Portfolio Website</h3>
+          <p>A responsive personal portfolio using HTML, CSS animations, hover effects, and profile sections.</p>
+        </div>
+        <div class="card project-card">
+          <h3>CSS Components Library</h3>
+          <p>A collection of tooltip, transition, box-model, and show/hide UI examples.</p>
+        </div>
+        <div class="card project-card">
+          <h3>Student Profile Page</h3>
+          <p>A clean academic profile page showing objective, skills, education, and contact details.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>More Information</h2>
+      <div class="toggle-bar" onclick="togglePanel()">Click to Show / Hide More Details</div>
+      <div id="moreInfo">
+        <p><strong>Goal:</strong> To become a skilled software developer and contribute to real-world projects.</p>
+        <p><strong>Strengths:</strong> Hardworking, quick learner, disciplined, and interested in practical coding.</p>
+        <p><strong>GitHub Tip:</strong> Add this file as <code>index.html</code> in a GitHub repository and enable GitHub Pages to publish it online.</p>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>GitHub</h3>
+          <p>github.com/thakur23rajput</p>
+        </div>
+        <div class="card">
+          <h3>Email</h3>
+          <p>thakur23rajput@gmail.com</p>
+        </div>
+        <div class="card">
+          <h3>LinkedIn</h3>
+          <p>linkedin.com/in/mohit-thakur-a670043a5</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Mohit Thakur. Built with HTML, CSS, and JavaScript.</p>
+  </footer>
+
+  <script>
+    function togglePanel() {
+      const panel = document.getElementById("moreInfo");
+      panel.style.display = panel.style.display === "block" ? "none" : "block";
+    }
+  </script>
+</body>
+</html>
